@@ -94,9 +94,9 @@ Setiap widget memiliki perannya masing-masing dalam membangun tampilan dan fungs
 1. **Tetapkan Warna pada ShopItem:**
     ```dart
     final List<ShopItem> items = [
-        ShopItem("Lihat Item", Icons.checklist, Colors.brown),
-        ShopItem("Tambah Item", Icons.add_shopping_cart, Colors.green),
-        ShopItem("Logout", Icons.logout, Colors.red),
+        ShopItem("Inventory", Icons.checklist, Colors.brown),
+        ShopItem("Add an Item", Icons.add_shopping_cart, Colors.green),
+        ShopItem("Continue Your Journey", Icons.logout, Colors.red),
     ];
     ```
 
