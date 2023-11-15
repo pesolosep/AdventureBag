@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:adventure_bag/inventory.dart';
+import 'package:adventure_bag/screens/inventory.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.brown),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
         useMaterial3: true,
       ),
       home: MyHomePage(),
