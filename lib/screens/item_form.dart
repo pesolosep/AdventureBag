@@ -1,6 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:adventure_bag/widgets/left_drawer.dart';
+import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:adventure_bag/screens/inventory.dart';
+import 'package:adventure_bag/widgets/left_drawer.dart';
+import 'package:adventure_bag/main.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
 class BagFormPage extends StatefulWidget {
   const BagFormPage({super.key});
 
@@ -12,7 +17,8 @@ class _BagFormPageState extends State<BagFormPage> {
   final _formKey = GlobalKey<FormState>();
   String _name = "";
   int _amount = 0;
-  String _description = "";
+  String _skinType = "";
+  String _payment = "";
 
   @override
   Widget build(BuildContext context) {
@@ -38,8 +44,8 @@ class _BagFormPageState extends State<BagFormPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
                   decoration: InputDecoration(
-                    hintText: "Item name",
-                    labelText: "Item name",
+                    hintText: "Nama Produk",
+                    labelText: "Nama Produk",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
                     ),
@@ -61,8 +67,34 @@ class _BagFormPageState extends State<BagFormPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
                   decoration: InputDecoration(
-                    hintText: "Amount",
-                    labelText: "Amount",
+                    hintText: "Skin Type",
+                    labelText: "Skin Type",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                  ),
+                  onChanged: (String? value) {
+                    setState(() {
+                      _skinType = value!;
+                    });
+                  },
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return "Harga tidak boleh kosong!";
+                    }
+                    if (int.tryParse(value) == null) {
+                      return "Harga harus berupa angka!";
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    hintText: "Jumlah",
+                    labelText: "Jumlah",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
                     ),
@@ -74,10 +106,10 @@ class _BagFormPageState extends State<BagFormPage> {
                   },
                   validator: (String? value) {
                     if (value == null || value.isEmpty) {
-                      return "Amount tidak boleh kosong!";
+                      return "Jumlah tidak boleh kosong!";
                     }
                     if (int.tryParse(value) == null) {
-                      return "Amount harus berupa angka!";
+                      return "Jumlah harus berupa angka!";
                     }
                     return null;
                   },
@@ -87,20 +119,20 @@ class _BagFormPageState extends State<BagFormPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
                   decoration: InputDecoration(
-                    hintText: "Description",
-                    labelText: "Description",
+                    hintText: "Payment Type",
+                    labelText: "Payment Type",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
                     ),
                   ),
                   onChanged: (String? value) {
                     setState(() {
-                      _description = value!;
+                      _payment = value!;
                     });
                   },
                   validator: (String? value) {
                     if (value == null || value.isEmpty) {
-                      return "Description tidak boleh kosong!";
+                      return "Deskripsi tidak boleh kosong!";
                     }
                     return null;
                   },
@@ -120,11 +152,12 @@ class _BagFormPageState extends State<BagFormPage> {
                   // Kirim ke Django dan tunggu respons
         // TODO: Ganti URL dan jangan lupa tambahkan trailing slash (/) di akhir URL!
         final response = await request.postJson(
-        "http://<URL_APP_KAMU>/create-flutter/",
+        "https://pesolcsgoskinstore.vercel.app/create-flutter/",
         jsonEncode(<String, String>{
             'name': _name,
-            'price': _price.toString(),
-            'description': _description,
+            'amount': _amount.toString(),
+            'skin type': _skinType,
+            'payment': _payment,
             // TODO: Sesuaikan field data sesuai dengan aplikasimu
         }));
         if (response['status'] == 'success') {

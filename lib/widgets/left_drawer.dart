@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:adventure_bag/screens/inventory.dart';
 import 'package:adventure_bag/screens/item_form.dart';
+import 'package:adventure_bag/screens/list_product.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
@@ -12,12 +13,12 @@ class LeftDrawer extends StatelessWidget {
         children: [
           const DrawerHeader(
             decoration: BoxDecoration(
-              color: Colors.brown,
+              color: Colors.indigo,
             ),
             child: Column(
               children: [
                 Text(
-                  'Adventure Bag',
+                  'Shopping List',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 30,
@@ -25,44 +26,58 @@ class LeftDrawer extends StatelessWidget {
                     color: Colors.white,
                   ),
                 ),
-                Padding(padding: EdgeInsets.all(16)),
-                Text("Keep track of your items here!",
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
+                Padding(padding: EdgeInsets.all(10)),
+                Text(
+                  "Add Your Orders Here!",
+                  style:  TextStyle(
                     fontSize: 15,
-                    fontWeight: FontWeight.normal,
-                    color: Colors.white,
+                    color:  Colors.white,
+                    fontWeight:  FontWeight.normal,
                   ),
+                  textAlign: TextAlign.center,
                 ),
               ],
             ),
           ),
           ListTile(
             leading: const Icon(Icons.home_outlined),
-            title: const Text('Main Page'),
+            title: const Text('Halaman Utama'),
             // Bagian redirection ke MyHomePage
             onTap: () {
               Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MyHomePage(),
-                )
-              );
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MyHomePage(),
+                  ));
             },
           ),
           ListTile(
-            leading: const Icon(Icons.add_circle),
-            title: const Text('Add an Item'),
-            // Bagian redirection ke StudioFormPage
+            leading: const Icon(Icons.add_shopping_cart),
+            title: const Text('Tambah Produk'),
+            // Bagian redirection ke ShopFormPage
             onTap: () {
               Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const BagFormPage(),
-                ),
-            ListTile(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const BagFormPage(),
+                  ));
+            },
+          ),
+          // ListTile(
+          //   leading: const Icon(Icons.checklist),
+          //   title: const Text('Lihat Semua Produk'),
+          //   // Bagian redirection ke ShopFormPage
+          //   onTap: () {
+          //     Navigator.push(
+          //         context,
+          //         MaterialPageRoute(
+          //           builder: (context) => const LihatItem(),
+          //         ));
+          //   },
+          // ),
+          ListTile(
               leading: const Icon(Icons.shopping_basket),
-              title: const Text('Item Lists'),
+              title: const Text('Daftar Produk'),
               onTap: () {
                   // Route menu ke halaman produk
                   Navigator.push(
@@ -70,9 +85,6 @@ class LeftDrawer extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => const ProductPage()),
                   );
               },
-              ),
-              );
-            },
           ),
         ],
       ),

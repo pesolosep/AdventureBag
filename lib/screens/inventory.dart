@@ -12,7 +12,7 @@ class MyHomePage extends StatelessWidget {
         return Scaffold(
             appBar: AppBar(
                 title: const Text(
-                'Adventure Bag!',
+                'CSGO Skin Store!',
                 ),
             ),
             drawer: const LeftDrawer(),
@@ -28,7 +28,7 @@ class MyHomePage extends StatelessWidget {
                         padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
                         // Widget Text untuk menampilkan tulisan dengan alignment center dan style yang sesuai
                         child: Text(
-                        'Adventure Bag!', // Text yang menandakan toko
+                        'CSGO Skin Store!', // Text yang menandakan toko
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 30,
@@ -60,7 +60,7 @@ class MyHomePage extends StatelessWidget {
 
 
 final List<BagItem> items = [
-    BagItem("See Inside your Bag", Icons.checklist, Colors.brown),
-    BagItem("Add an Item", Icons.add_shopping_cart, Colors.green),
-    BagItem("Continue your Journey", Icons.logout, Colors.red),
+    BagItem("See Your Orders", Icons.checklist, Colors.brown),
+    BagItem("Add an Order", Icons.add_shopping_cart, Colors.green),
+    BagItem("Quit Gambling", Icons.logout, Colors.red),
 ];
