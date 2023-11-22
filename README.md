@@ -400,3 +400,169 @@ ListTile(
 ),
 ```
 </details>
+
+<details>
+<summary><b>Tugas 9</b></summary>
+
+## Apakah bisa kita melakukan pengambilan data JSON tanpa membuat model terlebih dahulu? Jika iya, apakah hal tersebut lebih baik daripada membuat model sebelum melakukan pengambilan data JSON?
+Ya, kita bisa melakukan pengambilan data JSON tanpa membuat model terlebih dahulu. Mengambil data JSON tanpa model berarti kita akan langsung memproses data JSON tersebut sebagai struktur data dasar yang disediakan oleh bahasa pemrograman kita.
+
+Keuntungan Menggunakan Pendekatan Tanpa Model:
+- Fleksibilitas: Mudah untuk bekerja dengan data yang strukturnya tidak tetap atau sering berubah.
+- Pengembangan yang Lebih Cepat: Mengurangi kebutuhan untuk merancang dan mengimplementasikan model terlebih dahulu.
+- Sederhana: Cocok untuk skenario sederhana di mana struktur data tidak terlalu kompleks atau tidak memerlukan validasi khusus.<br>
+Keuntungan Menggunakan Model:
+- Validasi Data: Model membantu dalam validasi data dan memastikan bahwa data yang diterima sesuai dengan yang diharapkan.
+- Konsistensi: Memudahkan pemeliharaan kode, terutama dalam proyek besar karena semua interaksi data mengikuti struktur yang telah ditentukan.
+- Pemeliharaan Kode: Memudahkan pemeliharaan dan perubahan kode di masa depan, karena perubahan pada struktur data hanya perlu dilakukan di satu tempat (model).
+- Dokumentasi: Model berfungsi sebagai bentuk dokumentasi, memudahkan developer lain untuk memahami struktur data.
+<br>
+Lebih disarankan untuk kita membuat model terlebih dahulu supaya JSON yang hendak kita olah sudah benar-benar mengikuti syntax pemrograman.
+
+## Jelaskan fungsi dari CookieRequest dan jelaskan mengapa instance CookieRequest perlu untuk dibagikan ke semua komponen di aplikasi Flutter.
+Fungsi utama dari `CookieRequest` adalah untuk menangani cookie saat melakukan HTTP request. Ini meliputi pengiriman cookie saat HTTP request ke server dan menyimpan cookie yang diterima dari server. Hal ini penting untuk memastikan bahwa sesi pengguna tetap berjalan dengan konsisten konteksnya saat pengguna menggunakan aplikasi, misalnya saat autentikasi atau saat mengatur preferensi pengguna yang disimpan.
+
+Membagikan instance `CookieRequest` ke semua komponen di aplikasi Flutter penting karena ini memastikan bahwa manajemen cookie dilakukan secara konsisten di seluruh aplikasi. Dengan cara ini, semua request yang dibuat dari berbagai bagian aplikasi akan memiliki akses ke informasi cookie yang sama, memastikan bahwa pengguna tetap terautentikasi dan preferensi mereka tetap diterapkan di seluruh aplikasi. Ini juga membantu dalam menyederhanakan arsitektur kode dengan memusatkan logic dari manajemen cookie sehingga mengurangi duplikasi dan potensi kesalahan.
+
+
+## Jelaskan mekanisme pengambilan data dari JSON hingga dapat ditampilkan pada Flutter.
+1. GET Request dikirimkan ke url supaya kita mendapatkan JSON yang berisi list of product.
+```   var url = Uri.parse('http://127.0.0.1:8000/json/');
+    var response = await http.get(
+      url,
+      headers: {"Content-Type": "application/json"},
+    );
+```
+
+2. Mengubah http respons body agar sesuai dengan bentuk JSON
+```
+var data = jsonDecode(utf8.decode(response.bodyBytes)); 
+```
+3. Dari data JSON tersebut, objek product dibuat dan disimpan pada list_product.
+```
+List<Product> list_product = [];
+    for (var d in data) {
+      if (d != null) {
+        list_product.add(Product.fromJson(d));
+      }
+    }
+    return list_product;
+```
+4. Seluruh item yang sudah ada ditampilkan dengan ListView.builder() dan masing-masingnya ditampilkan dalam bentuk Card. Jika card suatu product diklik, maka akan pergi ke halaman details
+```
+ return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                var barang = snapshot.data![index].fields; // Assuming fields has the necessary properties
+                return Card(
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetailItemPage(fields: barang),
+                        ),
+                      );
+                    },
+```
+
+## Jelaskan mekanisme autentikasi dari input data akun pada Flutter ke Django hingga selesainya proses autentikasi oleh Django dan tampilnya menu pada Flutter.
+1. Membangun objek request dengan CookieRequest lalu meminta input username dan password.
+```
+    final request = context.watch<CookieRequest>();
+```
+```
+            TextField(
+              controller: _usernameController,
+              decoration: const InputDecoration(
+                labelText: 'Username',
+              ),
+            ),
+```
+```
+            TextField(
+              controller: _passwordController,
+              decoration: const InputDecoration(
+                labelText: 'Password',
+              ),
+              obscureText: true,
+            ),
+```
+2. Melakukan login request supaya bisa  mengirim data username dan password ke url tujuan.
+```
+                final response =
+                    await request.login("http://127.0.0.1:8000/auth/login/", {
+                  'username': username,
+                  'password': password,
+                });
+```
+3. App akan memberikan respons sesuai login request. Kalau berhasil, maka user akan menuju halaman MyHomePage(). Sedangkan, kalau gagal akan muncul AlertDialog().
+
+```
+               if (request.loggedIn) {
+                  String message = response['message'];
+                  String uname = response['username'];
+                  // ignore: use_build_context_synchronously
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => MyHomePage()),
+                  );
+                  // ignore: use_build_context_synchronously
+                  ScaffoldMessenger.of(context)
+                    ..hideCurrentSnackBar()
+                    ..showSnackBar(SnackBar(
+                        content: Text("$message Selamat datang, $uname.")));
+                } else {
+                  // ignore: use_build_context_synchronously
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Login Gagal'),
+                      content: Text(response['message']),
+                      actions: [
+                        TextButton(
+                          child: const Text('OK'),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ],
+                    ),
+```
+## Sebutkan seluruh widget yang kamu pakai pada tugas ini dan jelaskan fungsinya masing-masing.
+1. `LeftDrawer`: Widget kustom (didefinisikan di luar kode yang diberikan) yang mungkin digunakan untuk menampilkan drawer navigasi di sisi kiri.
+2. `FutureBuilder`: Widget ini digunakan untuk membangun widget berdasarkan hasil terbaru dari Future, seperti menampilkan data yang diambil dari internet.
+3. `Center`: Widget ini digunakan untuk menempatkan child widgetnya di tengah-tengah parent widget.
+4. `CircularProgressIndicator`: Widget ini menampilkan indikator loading yang berputar.
+5. `ListView.builder`: Widget ini digunakan untuk membuat daftar yang scrollable, dimana item-itemnya dibangun secara dinamis.
+6. `SizedBox`: Widget ini digunakan untuk memberikan jarak antar widget.
+7. `ElevatedButton`: Widget ini menampilkan tombol yang menonjol, biasanya digunakan untuk aksi utama dalam sebuah form.
+8. `Navigator`: Digunakan untuk navigasi antar halaman dalam aplikasi.
+9. `AlertDialog`: Widget ini menampilkan dialog untuk memberi informasi atau konfirmasi kepada pengguna.
+10. `TextButton`: Widget ini menampilkan tombol dengan teks, biasanya digunakan dalam dialog.
+11. `Provider`: Paket ini digunakan untuk manajemen state dan akses data melintasi widget.
+12. `CookieRequest `(dari `pbp_django_auth`): Komponen ini digunakan untuk mengelola autentikasi dan permintaan HTTP dengan cookie, khususnya dalam konteks login.
+Sisanya sama seperti minggu lalu.
+
+## Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step! (bukan hanya sekadar mengikuti tutorial).
+1. Membangun app baru di django project bernama authentication
+2. Melakukan instalasi library corsheaders dan mengaturnya pada settings di django project
+3. Membuat method untuk melakukan login pada views.py authentication
+4. Membuat method untuk melakukan logout pada views.py authentication
+5. Membangun method create_product_flutter pada views.py main
+6. Mengatur path untuk semua method yang baru dibangun
+7. Menginstal semua package baru yang akan dibutuhkan pada tugas minggu ini seperti provider, pbp_django_auth, dan http
+8. Membuat login.dart dan mengatur main.dart supaya pertama kali masuk ke LoginPage()
+9. Membangun product.dart yang merupakan model
+10. Mengizinkan flutter app bisa mengakses internet
+11. Membangun list_product.dart dengan fetching data dari web yang sudah dideploy
+12. Mengatur ulang left drawer
+13. Menghubungkan form dengan CookieRequest
+14. Mengatur ulang pengisian form dengan jsonEncode.
+15. Mengatur ulang card.dart dengan cookierequest agar bisa logout dengan method yang sudah dibangun sebelumnya
+16. Melakukan add-commit-push ke github.
+
+
+
+
+</details>
